@@ -1,6 +1,6 @@
 variable "name" {
   default = "mgumieniak"
-  description = "The Deployment environment"
+  description = "The Deployment name"
 }
 
 variable "environment" {
