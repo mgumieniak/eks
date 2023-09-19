@@ -17,6 +17,7 @@ module "network" {
   private_subnets_cidr = var.private_subnets_cidr
   availability_zones   = local.availability_zones
   environment          = var.environment
+  region               = data.aws_region.current_region.name
 }
 
 module "eks-network" {
@@ -31,40 +32,34 @@ module "eks-network" {
   private_route_table_id   = module.network.private_route_table_id
   public_route_table_id    = module.network.public_route_table_id
   default_network_acl_id   = module.network.default_network_acl_id
+  region                   = data.aws_region.current_region.name
 }
 
+module "iam-oidc-provider" {
+  source = "./modules/iam-oidc-provider"
 
-#resource "aws_eks_cluster" "eks_cluster" {
-#  name     = "${var.name}-k8s-cluster"
-#  role_arn = aws_iam_role.eks-cluster-role.arn
-#
-#  vpc_config {
-#    security_group_ids = [aws_security_group.cluster-sg.id]
-#    subnet_ids         = concat(module.eks-network.private_k8s_subnet_ids, module.eks-network.public_k8s_subnet_ids)
-#  }
-#}
+  issuer = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+}
 
-resource "aws_security_group" "cluster-sg" {
-  name        = "${var.name}-k8s-cluster-sg"
-  description = "Security group for the ${var.name}-k8s"
-  vpc_id      = module.network.vpc_id
+module "vpc-cni" {
+  source = "./modules/vpc-cni"
 
-  ingress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "all"
-    self      = true
-  }
+  oidc-provider-arn = module.iam-oidc-provider.arn
+  oidc-provider-id  = module.iam-oidc-provider.id
+  eks-cluster-name  = aws_eks_cluster.eks_cluster.name
+}
 
-  egress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "all"
-    self      = true
-  }
+module "cluster-authentication" {
+  source = "./modules/cluster-authentication"
 
-  tags = {
-    Name        = "${var.name}-vpc-sg"
-    Environment = var.environment
-  }
+  name          = var.name
+  environment   = var.environment
+  node-role-arn = aws_iam_role.eks-node-role.arn
+}
+
+module "service-account" {
+  source = "./modules/service-account"
+
+  oidc-provider-arn = module.iam-oidc-provider.arn
+  oidc-provider-url = module.iam-oidc-provider.url
 }

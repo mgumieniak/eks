@@ -8,6 +8,10 @@ variable "environment" {
   description = "The Deployment environment"
 }
 
+variable "region" {
+  description = "Region name"
+}
+
 variable "vpc_cidr" {
   default = "172.17.0.0/16"
   description = "The CIDR block of the vpc"

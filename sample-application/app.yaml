@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-s3-deployment
+  labels:
+    app: spring-s3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-s3
+  template:
+    metadata:
+      labels:
+        app: spring-s3
+    spec:
+      serviceAccountName: pod-service-account
+      containers:
+        - name: spring-s3
+          image: public.ecr.aws/a3e1v9n5/mgumieniak-public-repo:latest
+          ports:
+            - containerPort: 80

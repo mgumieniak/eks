@@ -8,6 +8,10 @@ variable "environment" {
   description = "The Deployment environment"
 }
 
+variable "region" {
+  description = "Region name"
+}
+
 variable "vpc_id" {
   type = string
   description = "The vpc id"

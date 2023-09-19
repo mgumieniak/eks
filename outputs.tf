@@ -13,3 +13,4 @@ output "private_subnets_id" {
 output "vpc-sg" {
   value = module.network.vpc-sg
 }
+
