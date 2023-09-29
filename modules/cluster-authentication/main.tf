@@ -1,5 +1,3 @@
-data "aws_caller_identity" "current" {}
-
 resource "kubernetes_config_map" "aws-auth-cm" {
   metadata {
     name      = "aws-auth"
@@ -33,7 +31,7 @@ resource "kubernetes_config_map" "aws-auth-cm" {
     ])
     mapUsers = yamlencode([
       {
-        userarn  = "arn:aws:iam::${data.aws_caller_identity.current.id}:user/maciej"
+        userarn  = "arn:aws:iam::${var.account-id}:user/maciej"
         username = "eks-admin"
         groups   = [
           "system:masters"
@@ -52,7 +50,7 @@ resource "aws_iam_role" "eks-admin-role" {
       {
         Effect    = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.id}:root"
+          AWS = "arn:aws:iam::${var.account-id}:root"
         },
         "Action" : "sts:AssumeRole",
       },
@@ -86,7 +84,7 @@ resource "aws_iam_role" "test" {
       {
         Effect    = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.id}:root"
+          AWS = "arn:aws:iam::${var.account-id}:root"
         },
         "Action" : "sts:AssumeRole",
       },

@@ -18,8 +18,10 @@
 #
 #  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
 #  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
+#  # Ensure that aws-auth is created before otherwise, node-group creates own
 #  depends_on = [
-#    aws_iam_role_policy_attachment.eks-node-role-attachment
+#    aws_iam_role_policy_attachment.eks-node-role-attachment,
+#    module.cluster-authentication
 #  ]
 #}
 
@@ -45,8 +47,30 @@ resource "aws_iam_role_policy_attachment" "eks-node-role-attachment" {
     AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    AmazonEKS_ECR_Policy               = aws_iam_policy.access-ecr.arn
   }
 
   policy_arn = each.value
   role       = aws_iam_role.eks-node-role.name
+}
+
+resource "aws_iam_policy" "access-ecr" {
+  name        = "ecr-policy-for-eks"
+  description = "Policy to access ECR images with EKS"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:GetAuthorizationToken"
+        ],
+        Resource = "*"
+      },
+    ]
+  })
 }

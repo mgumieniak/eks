@@ -28,13 +28,13 @@ resource "aws_subnet" "private_k8s_subnet" {
 
 locals {
   ep_interface = toset([
-    "com.amazonaws.${var.region}.ecr.dkr",
-    "com.amazonaws.${var.region}.ecr.api",
-    "com.amazonaws.${var.region}.ssm",
-    "com.amazonaws.${var.region}.ec2messages",
-    "com.amazonaws.${var.region}.ec2",
-    "com.amazonaws.${var.region}.ssmmessages",
-    "com.amazonaws.${var.region}.sts"
+#    "com.amazonaws.${var.region}.ecr.dkr",
+#    "com.amazonaws.${var.region}.ecr.api",
+#    "com.amazonaws.${var.region}.ssm",
+#    "com.amazonaws.${var.region}.ec2messages",
+#    "com.amazonaws.${var.region}.ec2",
+#    "com.amazonaws.${var.region}.ssmmessages",
+#    "com.amazonaws.${var.region}.sts"
   ])
   ep_gateway = toset(["com.amazonaws.${var.region}.s3"])
 }

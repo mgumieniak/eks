@@ -12,3 +12,7 @@ variable "environment" {
 variable "node-role-arn" {
   description = "EKS node role arn"
 }
+
+variable "account-id" {
+  description = "Account id"
+}

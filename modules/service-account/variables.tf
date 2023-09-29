@@ -20,3 +20,7 @@ variable "namespace" {
   default = "default"
   description = "Namespace"
 }
+
+variable "account-id" {
+  description = "Account id"
+}

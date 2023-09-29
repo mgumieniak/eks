@@ -1,5 +1,7 @@
 data "aws_region" "current_region" {}
 
+data "aws_caller_identity" "this" {}
+
 locals {
   availability_zones = [
     "${data.aws_region.current_region.name}a",
@@ -49,17 +51,19 @@ module "vpc-cni" {
   eks-cluster-name  = aws_eks_cluster.eks_cluster.name
 }
 
-module "cluster-authentication" {
-  source = "./modules/cluster-authentication"
-
-  name          = var.name
-  environment   = var.environment
-  node-role-arn = aws_iam_role.eks-node-role.arn
-}
-
-module "service-account" {
-  source = "./modules/service-account"
-
-  oidc-provider-arn = module.iam-oidc-provider.arn
-  oidc-provider-url = module.iam-oidc-provider.url
-}
+#module "cluster-authentication" {
+#  source = "./modules/cluster-authentication"
+#
+#  name          = var.name
+#  environment   = var.environment
+#  node-role-arn = aws_iam_role.eks-node-role.arn
+#  account-id        = data.aws_caller_identity.this.account_id
+#}
+#
+#module "service-account" {
+#  source = "./modules/service-account"
+#
+#  oidc-provider-arn = module.iam-oidc-provider.arn
+#  oidc-provider-url = module.iam-oidc-provider.url
+#  account-id        = data.aws_caller_identity.this.account_id
+#}

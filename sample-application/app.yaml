@@ -17,6 +17,23 @@ spec:
       serviceAccountName: pod-service-account
       containers:
         - name: spring-s3
-          image: public.ecr.aws/a3e1v9n5/mgumieniak-public-repo:latest
+          image: 056206897674.dkr.ecr.eu-west-1.amazonaws.com/spring-s3:latest
           ports:
             - containerPort: 80
+          env:
+            - name: AWS_REGION
+              value: eu-west-1
+            - name: AWS_ROLE_SESSION_NAME
+              value: pod-1234
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
