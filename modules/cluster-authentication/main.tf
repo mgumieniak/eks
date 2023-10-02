@@ -7,7 +7,7 @@ resource "kubernetes_config_map" "aws-auth-cm" {
   data = {
     mapRoles = yamlencode([
       {
-        rolearn  = var.node-role-arn
+        rolearn  = var.node_role_arn
         username = "system:node:{{EC2PrivateDNSName}}"
         groups   = [
           "system:bootstrappers",
@@ -31,7 +31,7 @@ resource "kubernetes_config_map" "aws-auth-cm" {
     ])
     mapUsers = yamlencode([
       {
-        userarn  = "arn:aws:iam::${var.account-id}:user/maciej"
+        userarn  = "arn:aws:iam::${var.account_d}:user/maciej"
         username = "eks-admin"
         groups   = [
           "system:masters"
@@ -50,7 +50,7 @@ resource "aws_iam_role" "eks-admin-role" {
       {
         Effect    = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::${var.account-id}:root"
+          AWS = "arn:aws:iam::${var.account_d}:root"
         },
         "Action" : "sts:AssumeRole",
       },
@@ -84,7 +84,7 @@ resource "aws_iam_role" "test" {
       {
         Effect    = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::${var.account-id}:root"
+          AWS = "arn:aws:iam::${var.account_d}:root"
         },
         "Action" : "sts:AssumeRole",
       },

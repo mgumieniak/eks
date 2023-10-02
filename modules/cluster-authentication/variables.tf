@@ -9,10 +9,10 @@ variable "environment" {
 }
 
 
-variable "node-role-arn" {
+variable "node_role_arn" {
   description = "EKS node role arn"
 }
 
-variable "account-id" {
+variable "account_d" {
   description = "Account id"
 }

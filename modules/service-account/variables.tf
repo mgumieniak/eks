@@ -8,19 +8,14 @@ variable "environment" {
   description = "The Deployment environment"
 }
 
-variable "oidc-provider-arn" {
+variable "oidc_provider_arn" {
   description = "OIDC provider's id"
 }
 
-variable "oidc-provider-url" {
+variable "oidc_provider_url" {
   description = "OIDC provider's url"
 }
 
-variable "namespace" {
-  default = "default"
-  description = "Namespace"
-}
-
-variable "account-id" {
+variable "account_id" {
   description = "Account id"
 }

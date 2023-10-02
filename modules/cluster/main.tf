@@ -1,10 +1,10 @@
-resource "aws_eks_cluster" "eks_cluster" {
+resource "aws_eks_cluster" "eks-cluster" {
   name     = "${var.name}-k8s-cluster"
   role_arn = aws_iam_role.eks-cluster-role.arn
 
   vpc_config {
     security_group_ids = [aws_security_group.cluster-sg.id]
-    subnet_ids         = concat(module.eks-network.private_k8s_subnet_ids, module.eks-network.public_k8s_subnet_ids)
+    subnet_ids         = concat(var.private_k8s_subnets_id, var.public_k8s_subnets_id)
 
     endpoint_private_access = true
     endpoint_public_access = true
@@ -18,7 +18,7 @@ resource "aws_eks_cluster" "eks_cluster" {
 resource "aws_security_group" "cluster-sg" {
   name        = "${var.name}-k8s-cluster-sg"
   description = "Security group for the ${var.name}-k8s"
-  vpc_id      = module.network.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port = "0"
